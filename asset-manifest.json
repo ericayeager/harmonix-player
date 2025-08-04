@@ -1,17 +1,17 @@
 {
   "files": {
     "main.css": "/harmonix-player/static/css/main.97e8fc15.css",
-    "main.js": "/harmonix-player/static/js/main.d190bc93.js",
+    "main.js": "/harmonix-player/static/js/main.b088764e.js",
     "static/media/img1.jpg": "/harmonix-player/static/media/img1.4e6d982b70b2a38516ae.jpg",
     "static/media/logo.png": "/harmonix-player/static/media/logo.8dca488c04fa411fcde3.png",
     "static/media/img11.jpg": "/harmonix-player/static/media/img11.e9ac11b13152dbd665ad.jpg",
     "static/media/playing.gif": "/harmonix-player/static/media/playing.d99cadfd78e4ce0564be.gif",
     "index.html": "/harmonix-player/index.html",
     "main.97e8fc15.css.map": "/harmonix-player/static/css/main.97e8fc15.css.map",
-    "main.d190bc93.js.map": "/harmonix-player/static/js/main.d190bc93.js.map"
+    "main.b088764e.js.map": "/harmonix-player/static/js/main.b088764e.js.map"
   },
   "entrypoints": [
     "static/css/main.97e8fc15.css",
-    "static/js/main.d190bc93.js"
+    "static/js/main.b088764e.js"
   ]
 }
