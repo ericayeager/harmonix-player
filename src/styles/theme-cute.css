@@ -1,0 +1,269 @@
+/* ==========================================================================
+   src/styles/theme-cute.css
+   Cute / "Hello Kitty" inspired theme — soft pastels, warm pink gradients,
+   playful micro-interactions, generous radii, and smooth, bouncy motion.
+   Loads AFTER base.css and intentionally overrides tokens + selected UI bits.
+   ========================================================================== */
+
+/* ---------- font (theme-owned; Home.js also injects) ---------- */
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700&display=swap');
+
+.app.theme-cute .aboutusankita{
+    text-decoration: none;
+    color: rgb(0, 0, 0);
+}
+
+.app.theme-cute {
+  /* typography */
+  --font-family: "Nunito", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+  font-family: var(--font-family);
+
+  /* backgrounds (soft, warm pastel) */
+  --bg-1: #fff9fb;
+  --bg-2: linear-gradient(180deg,#fbdce6 0%, #fff2f6 100%);
+
+  /* panels & cards (airy, near-white with warmth) */
+  --panel: rgba(0,0,0,0.03); /* subtle contrast */
+
+  /* text */
+  --text: #2b1c28;    /* deep plum for readable contrast on pastels */
+  --muted: #7a5b66;   /* softened plum for secondary text */
+
+  /* playful accents */
+  --accent: #000000;      /* hot pink (primary) */
+  --accent-2: #ffb7d9;    /* soft rose (secondary) */
+  --accent-contrast: rgba(255,111,166,0.12);
+
+  /* glass border */
+  --glass-border: rgba(34,34,34,0.04);
+
+  /* focus */
+  --focus-ring: rgba(255,111,166,0.18);
+
+  /* motion tuning — slightly more bouncy for cute feel */
+  --t-fast: 140ms;
+  --t-med: 300ms;
+  --t-slow: 520ms;
+  --easing-spring: cubic-bezier(.22,1.2,.36,1);
+}
+
+/* ---------- global surface tweaks (softening shadows & radii) ---------- */
+.app.theme-cute {
+  color: var(--text);
+  background: var(--bg-2);
+}
+
+/* apply warm glass to key surfaces */
+.app.theme-cute .nav,
+.app.theme-cute .rightColumn,
+.app.theme-cute .themeDropdown,
+.app.theme-cute .songItem,
+.app.theme-cute .nowPlayingCard,
+.app.theme-cute .miniPlayer {
+  background: var(--card-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: 14px;
+  box-shadow: 0 8px 30px rgba(65,20,35,0.06);
+}
+
+/* NAV */
+.app.theme-cute .nav {
+  background: linear-gradient(180deg, rgba(255, 169, 203, 0.629), rgba(255, 242, 247, 0.468));
+  border-bottom: 1px solid rgba(255,192,210,0.12);
+  border: none;
+}
+.app.theme-cute .brand { color: var(--text); font-weight: 800; letter-spacing: 0.2px; }
+.app.theme-cute .nav .nav-link { color: var(--muted); }
+.app.theme-cute .nav .nav-link:hover { color: var(--text); }
+
+/* SWATCH */
+.swatch { box-shadow: 0 4px 18px rgba(255,105,150,0.06); }
+
+/* SEARCH BAR — airy & luminous */
+.app.theme-cute .searchBar {
+  background: linear-gradient(180deg, rgba(255,248,250,0.9), rgba(255,245,249,0.9));
+  border: 1px solid rgba(255,198,215,0.18);
+  box-shadow: 0 8px 22px rgba(255,180,210,0.03);
+}
+.app.theme-cute .searchBar input { color: var(--text); }
+
+/* TABS — pill-like and cheerful */
+.app.theme-cute .tabBtn {
+  background: transparent;
+  color: var(--muted);
+  border-radius: 999px;
+  padding: 8px 14px;
+  border: 1px solid transparent;
+  transition: transform var(--t-fast) var(--easing-spring), background var(--t-med), color var(--t-med);
+}
+.app.theme-cute .tabBtn:hover { transform: translateY(-4px); color: var(--text); }
+.app.theme-cute .tabBtn.active {
+  background: linear-gradient(90deg, rgba(255,111,166,0.10), rgba(255,183,205,0.06));
+  color: var(--text);
+  border: 1px solid rgba(255,111,166,0.14);
+  box-shadow: 0 10px 36px rgba(255,111,166,0.06);
+}
+
+/* SONG CARD — friendly proportions & floaty hover */
+.app.theme-cute .songItem {
+  border-radius: 16px;
+  transition: transform var(--t-med) var(--easing-spring), box-shadow var(--t-med), border-color var(--t-med);
+}
+.app.theme-cute .songItem:hover {
+  transform: translateY(-10px) scale(1.01);
+  box-shadow: 0 26px 70px rgba(255,100,160,0.06);
+  border-color: var(--accent-2);
+}
+.app.theme-cute .songItem.playing {
+  outline: 2px solid var(--accent);
+  box-shadow: 0 28px 90px rgba(255,100,160,0.08);
+}
+
+/* COVER art gentle radius */
+.app.theme-cute .cover { border-radius: 12px; border: 1px solid rgba(255,255,255,0.6); }
+
+/* SONG TITLE — playful weight */
+.app.theme-cute .songName {
+  color: var(--text);
+  font-weight: 700;
+  font-size: 15px;
+  text-align: center;
+}
+
+/* PLAY ICON BUBBLE — candy surface */
+.app.theme-cute .songPlayIcon {
+  background: linear-gradient(180deg, rgba(255,255,255,0.9), rgba(255,245,249,0.95));
+  border: 1px solid rgba(255,183,205,0.12);
+  box-shadow: 0 8px 30px rgba(255,105,160,0.06);
+}
+.app.theme-cute .songPlayIcon:hover { transform: translateY(-8px) scale(1.06); color: var(--accent); }
+
+/* NOW PLAYING CARD — warm, centered content */
+.app.theme-cute .nowPlayingCard {
+  padding: 16px;
+  border-radius: 14px;
+  transition: transform var(--t-med) var(--easing-spring), box-shadow var(--t-med);
+}
+.app.theme-cute .nowPlayingCard:hover { transform: translateY(-6px); box-shadow: 0 20px 80px rgba(255,120,170,0.06); }
+.app.theme-cute .nowCover { border-radius: 12px; }
+
+/* CONTROLS — soft, rounded, clear affordances */
+.controlIcon {
+  color: var(--text);
+  transition: transform 140ms var(--easing-spring), color var(--t-fast);
+  border-radius: 10px;
+  padding: 6px;
+}
+.controlIcon:hover { transform: translateY(-4px); color: var(--accent); }
+.controlIcon.active { color: var(--accent); }
+
+/* Icon styling hint for cute (rounded with soft background) */
+html[data-icon-style="cute"] .controlIcon,
+html[data-icon-style="cute"] .iconButton {
+  border-radius: 12px;
+  color: var(--text);
+  background: linear-gradient(180deg, rgba(255,255,255,0.92), rgba(255,250,253,0.92));
+  box-shadow: 0 8px 20px rgba(255,100,160,0.05);
+}
+
+/* PROGRESS / VOLUME TRACK — pastel track and lively thumb */
+.app.theme-cute .progressBar,
+.app.theme-cute .miniProgressBar,
+.app.theme-cute .volumeRange {
+  background: linear-gradient(90deg, rgba(248, 15, 108, 0.6), rgba(243, 147, 185, 0.6));
+}
+.app.theme-cute input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 14px; height: 14px; border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 8px 26px rgba(255,111,166,0.14);
+  border: 2px solid rgba(255,255,255,0.9);
+}
+.app.theme-cute input[type="range"]::-moz-range-thumb {
+  width: 14px; height: 14px; border-radius: 50%;
+  background: var(--accent); border: none; box-shadow: 0 6px 20px rgba(255,111,166,0.12);
+}
+
+/* QUEUE PANEL — light & airy */
+.app.theme-cute .queuePanel {
+  background: linear-gradient(180deg, rgba(255,255,255,0.96), rgba(255,250,253,0.98));
+  border: 1px solid rgba(255,190,210,0.12);
+  box-shadow: 0 10px 30px rgba(255,110,160,0.04);
+}
+.app.theme-cute .queueActive {
+  background: var(--accent-contrast);
+  border-left: 3px solid var(--accent);
+}
+
+/* MINI PLAYER — centered pastel bar */
+.app.theme-cute .miniPlayer {
+  background: linear-gradient(90deg, rgba(255,235,245,0.95), rgba(255,245,249,0.98));
+  border: 1px solid rgba(255,190,210,0.08);
+  box-shadow: 0 18px 60px rgba(255,110,160,0.06);
+  border-radius: 14px;
+}
+.app.theme-cute .miniTitle { color: var(--text); font-weight:700; }
+
+/* MICRO-INTERACTIONS — bouncy, friendly */
+@keyframes cuteBounce {
+  0% { transform: translateY(0); }
+  35% { transform: translateY(-6px); }
+  70% { transform: translateY(-2px); }
+  100% { transform: translateY(0); }
+}
+.songItem:hover { animation: none; } /* keep hover immediate and not conflicting */
+.songItem.playing .cover { animation: cuteBounce 900ms var(--easing-spring) infinite; transform-origin: center; }
+
+/* subtle float for pop-ups */
+@keyframes floatInCute { from { opacity:0; transform: translateY(8px) scale(0.995); } to { opacity:1; transform: translateY(0) scale(1); } }
+.themeDropdown, .toast, .modal { animation: floatInCute var(--t-med) var(--easing-spring) both; }
+
+/* TOASTS — soft pastel toasts */
+.toasts .toast {
+  background: linear-gradient(180deg, rgba(255,245,249,0.98), rgba(255,240,247,0.98));
+  color: var(--text);
+  border: 1px solid rgba(255,190,210,0.12);
+  box-shadow: 0 18px 40px rgba(255,110,160,0.05);
+}
+
+/* TOOLTIP (light) */
+.tooltip .tooltip-content {
+  background: rgba(45,20,30,0.92);
+  color: #fff;
+  box-shadow: 0 8px 30px rgba(0,0,0,0.4);
+}
+
+/* KBD helper styled for cute theme */
+.app.theme-cute .kbd {
+  background: rgba(255,230,240,0.9);
+  border: 1px solid rgba(255,190,210,0.12);
+  color: var(--muted);
+}
+
+/* ACCESSIBILITY — visible, warm focus */
+.app.theme-cute :focus-visible {
+  outline: 3px solid var(--focus-ring);
+  outline-offset: 4px;
+  border-radius: 10px;
+}
+
+/* REDUCED MOTION — graceful fallback */
+@media (prefers-reduced-motion: reduce) {
+  .themeDropdown, .toast, .modal, .songItem, .nowPlayingCard, .miniPlayer {
+    animation: none !important;
+    transition: none !important;
+  }
+  * { will-change: auto !important; }
+}
+
+/* PLACEHOLDERS */
+.app.theme-cute ::placeholder { color: rgba(118,82,96,0.45); }
+
+/* SMALL SCREEN TWEAKS */
+@media (max-width: 560px) {
+  .app.theme-cute .miniPlayer { padding: 8px; gap: 8px; }
+  .app.theme-cute .nowCover { width: 80px; height: 80px; }
+  .app.theme-cute .songItem { min-height: 220px; padding: 10px; }
+}
+

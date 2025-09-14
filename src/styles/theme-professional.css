@@ -1,0 +1,336 @@
+/* ==========================================================================
+   Harmonix — theme-professional.css (PRO)
+   Premium dark theme: high-contrast monochrome with refined accents,
+   buttery-smooth transitions, micro-interactions, and utility UI
+   (dropdowns, tooltips, toasts, modals). Loads AFTER base.css.
+   ========================================================================== */
+
+/* ---------- font (kept here for safety; Home.js also injects) ---------- */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
+
+.app.theme-professional {
+  /* typography */
+  --font-family: "Poppins", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+  font-family: var(--font-family);
+
+  /* deep background */
+  --bg-1: #050505;
+  --bg-2: linear-gradient(180deg,#060609 0%, #0d0d10 100%);
+
+  /* surfaces */
+  --panel: rgba(255,255,255,0.02);
+  --card-bg: linear-gradient(180deg, rgba(255,255,255,0.016), rgba(255,255,255,0.006));
+  --glass-border: rgba(255, 255, 255, 0.119);
+
+  /* text */
+  --text: #eef1f4;
+  --muted: #9aa0a6;
+
+  /* motion tuning (uses base tokens but slightly tuned for 'pro' feel) */
+  --t-fast: 120ms;
+  --t-med: 260ms;
+  --t-slow: 420ms;
+  --easing-smooth: cubic-bezier(.16,.84,.4,1);
+}
+
+/* ---------- global surface tweaks ---------- */
+.app.theme-professional {
+  color: var(--text);
+  background: var(--bg-2);
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+}
+
+/* ---------- elevated glass look for main surfaces ---------- */
+.app.theme-professional .nav,
+.app.theme-professional .rightColumn,
+.app.theme-professional .themeDropdown,
+.app.theme-professional .songItem,
+.app.theme-professional .nowPlayingCard,
+.app.theme-professional .miniPlayer {
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.012), rgba(105, 97, 97, 0.134));
+  border: 1px solid var(--glass-border);
+}
+
+.app.theme-professional .aboutusankita{
+    text-decoration: none;
+    color: rgb(255, 255, 255);
+}
+
+/* ---------- refined shadows & depth ---------- */
+.app.theme-professional .card-deep {
+  box-shadow: 0 10px 30px rgba(0,0,0,0.7), 0 2px 6px rgba(0,0,0,0.25);
+}
+.app.theme-professional .card-soft {
+  box-shadow: 0 6px 18px rgba(0,0,0,0.55);
+}
+
+/* ---------- tactile button & icon polish ---------- */
+.iconButton {
+  transition: transform var(--t-fast) var(--easing-smooth), box-shadow var(--t-fast), background var(--t-fast);
+  will-change: transform, box-shadow;
+  -webkit-tap-highlight-color: transparent;
+}
+.iconButton:active { transform: translateY(-1px) scale(0.995); }
+.iconButton:hover { box-shadow: 0 8px 30px rgba(0,0,0,0.45); }
+
+/* ripple pseudo-effect for primary clickable surfaces (non-invasive) */
+.iconButton.ripple, .tabBtn.ripple, .themeOption.ripple {
+  position: relative;
+  overflow: hidden;
+}
+.iconButton.ripple::after, .tabBtn.ripple::after, .themeOption.ripple::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 0;
+  height: 0;
+  background: radial-gradient(circle, rgba(255,255,255,0.08) 10%, transparent 10.01%);
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  opacity: 0;
+  transition: width 360ms var(--easing-smooth), height 360ms var(--easing-smooth), opacity 260ms linear;
+  pointer-events: none;
+}
+.iconButton.ripple:active::after, .tabBtn.ripple:active::after, .themeOption.ripple:active::after {
+  width: 220px; height: 220px; opacity: 1; transition: width 220ms var(--easing-smooth), height 220ms var(--easing-smooth), opacity 420ms linear;
+}
+
+/* ---------- dropdown / popover animations ---------- */
+/* subtle fade + slide */
+@keyframes fadeSlideDown {
+  from { opacity: 0; transform: translateY(-6px) scale(0.995); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+.themeDropdown {
+  animation: fadeSlideDown var(--t-med) var(--easing-smooth) both;
+  transform-origin: top right;
+}
+
+/* tooltip */
+.tooltip {
+  display:inline-block;
+  position: relative;
+}
+.tooltip .tooltip-content {
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%) translateY(6px);
+  background: rgba(0,0,0,0.75);
+  color: #fff;
+  padding: 6px 8px;
+  border-radius: 6px;
+  font-size: 12px;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 180ms ease, transform 220ms var(--easing-smooth);
+  box-shadow: 0 6px 20px rgba(0,0,0,0.6);
+}
+.tooltip:hover .tooltip-content {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+/* ---------- toast notifications (top-right) ---------- */
+.toasts {
+  position: fixed;
+  top: 18px;
+  right: 18px;
+  z-index: 9999;
+  display:flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.toast {
+  min-width: 220px;
+  max-width: 420px;
+  background: linear-gradient(180deg, rgba(0,0,0,0.72), rgba(0,0,0,0.6));
+  color: var(--text);
+  border-radius: 10px;
+  padding: 10px 12px;
+  box-shadow: 0 18px 60px rgba(0,0,0,0.7);
+  transform-origin: top right;
+  animation: toastIn var(--t-med) var(--easing-smooth) both;
+}
+@keyframes toastIn {
+  from { opacity: 0; transform: translateY(-10px) scale(0.995); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* ---------- modal overlay & dialog ---------- */
+.modal-backdrop {
+  position: fixed; inset: 0;
+  background: rgba(4,4,4,0.6);
+  display:flex; align-items:center; justify-content:center;
+  z-index: 9998;
+  animation: fadeIn var(--t-med) var(--easing-smooth);
+}
+@keyframes fadeIn { from { opacity:0 } to { opacity:1 } }
+.modal {
+  width: min(880px, calc(100% - 60px));
+  background: linear-gradient(180deg, rgba(255,255,255,0.012), rgba(255,255,255,0.006));
+  border-radius: 14px;
+  padding: 18px;
+  box-shadow: 0 32px 120px rgba(0,0,0,0.8);
+  border: 1px solid var(--glass-border);
+  transform-origin: center;
+  animation: popIn var(--t-med) var(--easing-smooth);
+}
+@keyframes popIn {
+  from { opacity: 0; transform: translateY(6px) scale(0.995); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* ---------- refined inputs & ranges ---------- */
+.searchBar {
+  transition: box-shadow var(--t-med) var(--easing-smooth), transform var(--t-fast) var(--easing-smooth);
+}
+.searchBar:focus-within { box-shadow: 0 12px 30px rgba(0,0,0,0.6); transform: translateY(-2px); }
+
+input[type="range"], .volumeRange, .progressBar, .miniProgressBar {
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0.41), rgba(255, 255, 255, 0.914));
+  transition: background var(--t-fast), box-shadow var(--t-fast);
+}
+
+
+
+
+/* ---------- now playing polish ---------- */
+.nowPlayingCard { transition: transform var(--t-med) var(--easing-smooth), box-shadow var(--t-med); }
+.nowPlayingCard:hover { transform: translateY(-6px); box-shadow: 0 28px 80px rgb(165, 148, 148); }
+
+.nowCover { transition: transform 360ms var(--easing-smooth); }
+.songItem:hover .cover, .nowCover:hover { transform: scale(1.03); }
+
+
+/* animated playing indicator (soft, non-distracting) */
+@keyframes eqPulse {
+  0% { transform: scaleY(1); opacity: 0.9; }
+  50% { transform: scaleY(1.18); opacity: 1; }
+  100% { transform: scaleY(1); opacity: 0.9; }
+}
+/* Example small eq mark you can toggle via a class */
+.eqBar {
+  width: 3px; height: 12px; background: var(--accent); border-radius:2px; display:inline-block;
+  animation: eqPulse 820ms ease-in-out infinite;
+}
+
+/* ---------- queue & item micro polish ---------- */
+.queuePanel li { transition: transform var(--t-fast) var(--easing-smooth), background var(--t-fast); }
+.queuePanel li:hover { transform: translateX(6px); background: rgba(255,255,255,0.02); }
+
+/* active queue highlight */
+.queueActive { box-shadow: inset 0 0 0 1px rgba(29,185,84,0.03); }
+
+/* ---------- accessible focus states ---------- */
+:focus-visible {
+  outline: 3px solid var(--focus-ring);
+  outline-offset: 4px;
+  border-radius: 8px;
+}
+
+/* ---------- tiny helpers ---------- */
+.kbd {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.03);
+  padding: 2px 6px;
+  border-radius: 6px;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+/* ---------- reduced-motion fallback (respect user) ---------- */
+@media (prefers-reduced-motion: reduce) {
+  .themeDropdown, .toast, .modal, .songItem, .nowPlayingCard, .miniPlayer {
+    animation: none !important;
+    transition: none !important;
+  }
+  .iconButton::after, .tabBtn::after, .themeOption::after { display: none !important; }
+  * { will-change: auto !important; }
+}
+
+/* ---------- finishing small visual niceties ---------- */
+/* placeholder color */
+.app.theme-professional ::placeholder { color: rgba(255,255,255,0.34); }
+
+/* subtle color tint for selected controls (eg. active tab) */
+.app.theme-professional .tabBtn.active {
+  background: linear-gradient(90deg, rgba(29,185,84,0.06), rgba(255,255,255,0.01));
+  color: var(--text);
+  border: 1px solid rgba(29,185,84,0.10);
+  box-shadow: 0 10px 40px rgba(0,0,0,0.6);
+}
+
+/* edges: make sure text remains crisp on low-dpi screens */
+.app.theme-professional { -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; }
+
+/* ---------- small screen adjustments to preserve layout ---------- */
+@media (max-width: 560px) {
+  .miniPlayer { flex-direction: row; padding: 8px; gap: 8px; }
+  .miniMeta { min-width: 120px; text-align: left; }
+  .nowCover { width: 80px; height: 80px; }
+  .songItem { min-height: 220px; padding: 10px; }
+}
+
+/* Fix: remove double border/box from nowPlayingCard */
+.app.theme-professional .nowPlayingCard {
+  background: transparent;   /* no extra background */
+  border: none;              /* kill the second border */
+  box-shadow: none;          /* optional: also remove extra shadow */
+}
+
+/* FORCE: plain white range thumb (very high specificity, temporary !important) */
+input[type="range"]::-webkit-slider-thumb,
+input[type="range"].volumeRange::-webkit-slider-thumb,
+input[type="range"].progressBar::-webkit-slider-thumb,
+input[type="range"].miniProgressBar::-webkit-slider-thumb,
+.volumeRange::-webkit-slider-thumb,
+.progressBar::-webkit-slider-thumb,
+.miniProgressBar::-webkit-slider-thumb {
+  -webkit-appearance: none !important;
+  appearance: none !important;
+  width: 14px !important;
+  height: 14px !important;
+  border-radius: 50% !important;
+  background: #ffffff !important;   /* plain white */
+  border: none !important;
+  box-shadow: none !important;
+  position: relative !important;
+  z-index: 3 !important;
+  margin-top: 0 !important; /* prevents vertical offset in some browsers */
+  cursor: pointer !important;
+}
+
+/* Firefox */
+input[type="range"]::-moz-range-thumb,
+.volumeRange::-moz-range-thumb,
+.progressBar::-moz-range-thumb,
+.miniProgressBar::-moz-range-thumb {
+  width: 14px !important;
+  height: 14px !important;
+  border-radius: 50% !important;
+  background: #ffffff !important;
+  border: none !important;
+  box-shadow: none !important;
+  cursor: pointer !important;
+}
+
+/* Active (drag) — keep it simple */
+input[type="range"]::-webkit-slider-thumb:active,
+.volumeRange::-webkit-slider-thumb:active,
+.progressBar::-webkit-slider-thumb:active,
+.miniProgressBar::-webkit-slider-thumb:active,
+input[type="range"]::-moz-range-thumb:active,
+.volumeRange::-moz-range-thumb:active,
+.progressBar::-moz-range-thumb:active,
+.miniProgressBar::-moz-range-thumb:active {
+  transform: scale(1.08) !important;
+}
+
+.songItem{
+    height: 310px;
+}
+

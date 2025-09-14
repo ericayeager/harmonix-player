@@ -1,0 +1,389 @@
+/* ==========================================================================
+   src/styles/theme-colorful.css
+   COLORFUL (PRO) — bright, neon-forward, high-energy theme with animated
+   gradients, multi-color accents, glowing highlights and polished micro-
+   interactions. Loads AFTER base.css.
+   ========================================================================== */
+
+/* ---------- font for colorful theme (Home.js also injects) ---------- */
+@import url('https://fonts.googleapis.com/css2?family=Rubik:wght@300;400;700&display=swap');
+
+.app.theme-colorful {
+  /* typography */
+  --font-family: "Rubik", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+  font-family: var(--font-family);
+
+  /* base/dynamic background */
+  --bg-1: #0c0722;
+  --bg-2: linear-gradient(135deg, #0c0722 0%, #07102b 40%, #0a1333 100%);
+
+  /* multi accents */
+  --accent-1: #ff6b6b;
+  --accent-2: #ffd86b;
+  --accent-3: #6bffd8;
+  --accent-4: #6b9bff;
+  --accent-5: #c46bff;
+
+  /* softer contrasts */
+  --accent-1-weak: rgba(255,107,107,0.10);
+  --accent-2-weak: rgba(255,216,107,0.10);
+  --accent-3-weak: rgba(107,255,216,0.10);
+  --accent-4-weak: rgba(107,155,255,0.10);
+  --accent-5-weak: rgba(196,107,255,0.10);
+
+  /* card surface */
+  --card-bg: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.006));
+  --panel: rgba(255,255,255,0.02);
+  --glass-border: rgba(255, 255, 255, 0);
+
+  /* text */
+  --text: #f7f8fb;
+  --muted: #c6c9ff;
+
+  /* focus ring */
+  --focus-ring: rgb(255, 255, 255);
+
+  /* motion */
+  --t-fast: 120ms;
+  --t-med: 260ms;
+  --t-slow: 560ms;
+  --easing-energetic: cubic-bezier(.22,.9,.3,1);
+}
+
+/* ---------- animated background ---------- */
+.app.theme-colorful {
+  background:
+    radial-gradient(1200px 600px at 10% 10%, rgba(196,107,255,0.06), transparent 8%),
+    radial-gradient(1000px 500px at 90% 90%, rgba(107,155,255,0.05), transparent 10%),
+    linear-gradient(135deg, #2f00ff 0%, #932b14 40%, #f61ceb 100%);
+  background-size: 200% 200%, 200% 200%, 100% 100%;
+  animation: colorfulCanvas 18s linear infinite;
+}
+@keyframes colorfulCanvas {
+  0% { background-position: 0% 50%, 100% 50%, 0% 0%; }
+  50% { background-position: 100% 50%, 0% 50%, 0% 0%; }
+  100% { background-position: 0% 50%, 100% 50%, 0% 0%; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .app.theme-colorful {
+    animation: none !important;
+    background-size: auto !important;
+  }
+}
+
+/* ---------- surface / card glow ---------- */
+.app.theme-colorful .nav,
+.app.theme-colorful .rightColumn,
+.app.theme-colorful .themeDropdown,
+.app.theme-colorful .songItem,
+.app.theme-colorful .nowPlayingCard,
+.app.theme-colorful .miniPlayer {
+  background: var(--card-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: 12px;
+  transition: box-shadow var(--t-med) var(--easing-energetic), transform var(--t-med) var(--easing-energetic);
+}
+
+.app.theme-colorful .card-neon {
+  box-shadow:
+    0 18px 60px rgba(0,0,0,0.6),
+    0 0 48px rgba(196,107,255,0.06);
+}
+
+/* ---------- NAV / HEADER ---------- */
+.app.theme-colorful .nav {
+  background: linear-gradient(180deg, rgba(61, 28, 223, 0.341), rgba(255, 7, 205, 0.34));
+  border-bottom: 1px solid rgba(255,255,255,0.02);
+  padding: 14px 28px;
+}
+.app.theme-colorful .brand {
+  color: var(--text);
+  font-weight: 800;
+  text-shadow: 0 2px 10px rgba(0,0,0,0.7);
+}
+.app.theme-colorful .nav .nav-link {
+  color: var(--muted);
+  transition: color var(--t-fast);
+}
+.app.theme-colorful .nav .nav-link:hover {
+  color: var(--text);
+  text-shadow: 0 4px 16px rgba(107,155,255,0.08);
+}
+
+/* ---------- THEME DROPDOWN ---------- */
+.app.theme-colorful .themeDropdown {
+  background: var(--card-bg);
+  border: 1px solid rgba(255,255,255,0.03);
+  box-shadow: 0 18px 48px rgba(0,0,0,0.7), 0 0 30px rgba(107,155,255,0.04);
+  animation: floatIn var(--t-med) var(--easing-energetic);
+}
+
+/* ---------- SEARCH BAR ---------- */
+.app.theme-colorful .searchBar {
+  background: linear-gradient(180deg, rgba(255,255,255,0.016), rgba(255,255,255,0.006));
+  border: 1px solid rgba(255,255,255,0.02);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+}
+.app.theme-colorful .searchBar input {
+  color: var(--text);
+}
+
+/* ---------- TABS ---------- */
+.app.theme-colorful .tabBtn {
+  color: var(--muted);
+  border-radius: 999px;
+  padding: 8px 14px;
+  background: transparent;
+  border: 1px solid transparent;
+  transition: transform var(--t-fast) var(--easing-energetic), box-shadow var(--t-fast), color var(--t-fast);
+}
+.app.theme-colorful .tabBtn:hover {
+  transform: translateY(-4px);
+  color: #fff;
+}
+.app.theme-colorful .tabBtn.active {
+  background: linear-gradient(90deg, var(--accent-1), var(--accent-5), var(--accent-4));
+  color: #061026;
+  box-shadow: 0 12px 40px rgba(107,155,255,0.12), 0 6px 24px rgba(255,107,107,0.08);
+  border: none;
+}
+
+/* ---------- SONG CARD ---------- */
+.songItem {
+  transition: transform var(--t-med) var(--easing-energetic), box-shadow var(--t-med);
+}
+.app.theme-colorful .songItem:hover {
+  transform: translateY(-12px) scale(1.01);
+  box-shadow:
+    0 28px 80px rgba(0,0,0,0.6),
+    0 0 30px var(--accent-3-weak),
+    0 0 60px var(--accent-5-weak);
+  border-color: transparent;
+}
+.app.theme-colorful .songItem::before {
+  content: "";
+  position: absolute; inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(120deg, var(--accent-1), var(--accent-5), var(--accent-4), var(--accent-3));
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  mask-composite: exclude;
+  opacity: 0;
+  transition: opacity var(--t-fast);
+  pointer-events: none;
+}
+.app.theme-colorful .songItem:hover::before {
+  opacity: 0.12;
+}
+@keyframes neonPulse {
+  0% { box-shadow: 0 0 0 0 rgba(255,107,107,0.08), inset 0 0 0 0 rgba(107,255,216,0.02); }
+  50% { box-shadow: 0 0 40px 12px rgba(255,216,107,0.06), inset 0 0 40px 8px rgba(196,107,255,0.02); }
+  100% { box-shadow: 0 0 0 0 rgba(255,107,107,0.08), inset 0 0 0 0 rgba(107,255,216,0.02); }
+}
+.app.theme-colorful .songItem.playing {
+  outline: none;
+  animation: neonPulse 2.6s ease-in-out infinite;
+  transform: translateY(-6px);
+}
+
+/* ---------- COVER art & play bubble ---------- */
+.app.theme-colorful .cover {
+  border-radius: 10px;
+  border: 1px solid rgba(255,255,255,0.02);
+}
+.app.theme-colorful .songPlayIcon {
+  background: radial-gradient(circle at 30% 20%, rgba(255,255,255,0.06), transparent 20%), linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.008));
+  border: 1px solid rgba(255,255,255,0.03);
+  transition: transform var(--t-fast) var(--easing-energetic), box-shadow var(--t-fast);
+}
+.app.theme-colorful .songPlayIcon:hover {
+  transform: translateY(-6px) scale(1.06);
+  box-shadow: 0 8px 36px rgba(107,155,255,0.12), 0 0 40px rgba(255,107,107,0.08);
+  color: var(--accent-4);
+}
+
+/* ---------- control icons ---------- */
+html[data-icon-style="colorful"] .controlIcon,
+html[data-icon-style="colorful"] .iconButton {
+  border-radius: 8px;
+  background: linear-gradient(90deg, rgba(255,255,255,0.012), rgba(255,255,255,0.006));
+  color: var(--text);
+  transition: transform var(--t-fast) var(--easing-energetic), filter var(--t-fast), color var(--t-fast);
+}
+html[data-icon-style="colorful"] .controlIcon:hover {
+  transform: translateY(-5px) scale(1.02);
+  filter: drop-shadow(0 8px 30px rgba(255,107,107,0.18));
+  color: var(--accent-1);
+}
+html[data-icon-style="colorful"] .playLarge {
+  color: var(--accent-4);
+  transition: color 420ms linear;
+}
+html[data-icon-style="colorful"] .playLarge:hover {
+  color: var(--accent-3);
+  filter: drop-shadow(0 10px 40px rgba(107,255,216,0.16));
+}
+
+/* ---------- progress & range ---------- */
+.app.theme-colorful .progressBar,
+.app.theme-colorful .miniProgressBar,
+.app.theme-colorful .volumeRange {
+  background: linear-gradient(90deg, rgba(193, 19, 144, 0.662), rgba(255, 0, 0, 0.753));
+  border-radius: 999px;
+}
+input[type="range"]::-webkit-slider-thumb,
+.volumeRange::-webkit-slider-thumb,
+.progressBar::-webkit-slider-thumb,
+.miniProgressBar::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 14px; height: 14px; border-radius: 50%;
+  background: radial-gradient(circle at 30% 30%, #fff, rgba(255,255,255,0.92)), linear-gradient(90deg, var(--accent-1), var(--accent-5), var(--accent-4));
+  box-shadow: 0 10px 36px rgba(107,155,255,0.16), 0 2px 8px rgba(0,0,0,0.5);
+  border: 2px solid rgba(0,0,0,0.18);
+  transition: transform 140ms var(--easing-energetic), box-shadow 140ms linear;
+}
+input[type="range"]:active::-webkit-slider-thumb {
+  transform: scale(1.08);
+}
+input[type="range"]::-moz-range-thumb {
+  width: 14px; height: 14px; border-radius: 50%;
+  background: linear-gradient(90deg, var(--accent-1), var(--accent-5), var(--accent-4));
+  border: none;
+  box-shadow: 0 8px 28px rgba(107,155,255,0.12);
+}
+
+/* ---------- now playing card ---------- */
+.app.theme-colorful .nowPlayingCard {
+  background: var(--card-bg);
+  border-radius: 12px;
+  transition: transform var(--t-med) var(--easing-energetic), box-shadow var(--t-med);
+  animation: neonPulse 2.6s ease-in-out infinite;
+  transform: translateY(-10px);
+}
+.app.theme-colorful .nowPlayingCard:hover {
+  transform: translateY(-12px);
+  box-shadow: 0 32px 100px rgb(0, 0, 0), 0 0 40px rgb(107, 154, 255);
+}
+.app.theme-colorful .nowTitle {
+  color: var(--text);
+  font-weight: 700;
+  text-shadow: 0 6px 30px rgba(0,0,0,0.6);
+}
+
+/* ---------- queue panel ---------- */
+.app.theme-colorful .queuePanel {
+  background: var(--card-bg);
+  border-radius: 12px;
+}
+.app.theme-colorful .queueActive {
+  background: linear-gradient(90deg, var(--accent-3-weak), var(--accent-4-weak));
+  border-left: 3px solid var(--accent-3);
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,0.02);
+}
+.app.theme-colorful .queuePanel li {
+  transition: transform var(--t-fast) var(--easing-energetic), box-shadow var(--t-fast);
+}
+.app.theme-colorful .queuePanel li:hover {
+  transform: translateX(6px);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+}
+
+/* ---------- mini player ---------- */
+.app.theme-colorful .miniPlayer {
+  background: var(--card-bg);
+  border-radius: 14px;
+  box-shadow: 0 20px 80px rgba(0,0,0,0.7), 0 0 40px rgba(196,107,255,0.04);
+  transition: transform var(--t-med) var(--easing-energetic), box-shadow var(--t-med);
+}
+@keyframes sheen {
+  0% { background-position: -200% 0%; }
+  100% { background-position: 200% 0%; }
+}
+.app.theme-colorful .miniPlayer::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 14px;
+  pointer-events: none;
+  background: linear-gradient(90deg, rgba(255,255,255,0.00) 0%, rgba(255,255,255,0.02) 30%, rgba(255,255,255,0.00) 60%);
+  mix-blend-mode: overlay;
+  opacity: 0.8;
+  animation: sheen 8s linear infinite;
+}
+
+/* ---------- popovers / toasts / modals ---------- */
+.toasts .toast {
+  background: var(--card-bg);
+  color: var(--text);
+  border: 1px solid rgba(255,255,255,0.03);
+  box-shadow: 0 28px 80px rgba(0,0,0,0.75), 0 0 40px rgba(255,107,107,0.05);
+  animation: popIn var(--t-med) var(--easing-energetic);
+}
+.modal-backdrop {
+  background: linear-gradient(180deg, rgba(4,4,10,0.72), rgba(8,6,20,0.74));
+}
+.modal {
+  background: var(--card-bg);
+  border: 1px solid rgba(255,255,255,0.03);
+  box-shadow: 0 40px 140px rgba(0,0,0,0.85);
+}
+.tooltip .tooltip-content {
+  background: rgba(0,0,0,0.82);
+  color: #fff;
+  box-shadow: 0 8px 30px rgba(0,0,0,0.6);
+  position: relative;
+}
+.tooltip .tooltip-content::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: -6px;
+  transform: translateX(-50%);
+  width: 36px; height: 3px; border-radius: 3px;
+  background: linear-gradient(90deg, var(--accent-1), var(--accent-5));
+  opacity: 0.9;
+}
+
+/* ---------- focus & accessibility ---------- */
+.app.theme-colorful :focus-visible {
+  outline: 3px solid rgba(255,255,255,0.12);
+  outline-offset: 4px;
+  border-radius: 8px;
+}
+.app.theme-colorful .kbd {
+  background: rgba(255,255,255,0.02);
+  color: var(--muted);
+  border: 1px solid rgba(255,255,255,0.02);
+}
+
+/* ---------- reduced-motion fallback ---------- */
+@media (prefers-reduced-motion: reduce) {
+  .app.theme-colorful .songItem,
+  .app.theme-colorful .nowPlayingCard,
+  .app.theme-colorful .miniPlayer {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+
+/* ---------- responsiveness ---------- */
+@media (max-width: 560px) {
+  .app.theme-colorful .miniPlayer { padding: 8px; gap: 8px; }
+  .app.theme-colorful .nowCover { width: 80px; height: 80px; }
+  .app.theme-colorful .songItem { min-height: 220px; padding: 10px; }
+}
+
+.app.theme-colorful ::placeholder {
+  color: rgba(255,255,255,0.5);
+}
+
+.app.theme-colorful {
+  text-shadow: 0 2px 8px rgba(0,0,0,0.6);
+}
+
+.app.theme-colorful .aboutusankita {
+  text-decoration: none;
+  color: rgb(255, 255, 255);
+}
+
