@@ -1,0 +1,8 @@
+{
+  "name": "Harmonix Player",
+  "short_name": "Harmonix",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#000000",
+  "description": "Harmonix Player - A beautiful music player made with React"
+}
