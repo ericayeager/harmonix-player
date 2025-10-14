@@ -16,6 +16,8 @@ const Auth = () => {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [confirmPassword, setConfirmPassword] = useState<string>("");
+  const [countries, setCountries] = useState<Array<any>>([]);
+  const [countryCode, setCountryCode] = useState<string>("");
   const [cooldownTimer, setCooldownTimer] = useState<number>(0);
   const [signinErrors, setSigninErrors] = useState<string[]>([]);
   const [signinWarning, setSigninWarning] = useState<string | null>(null);
@@ -39,6 +41,23 @@ const Auth = () => {
     });
     return () => subscription.unsubscribe();
   }, [navigate]);
+
+  // API base - prefer Vite env var VITE_API_URL, fall back to localhost:4000
+  const API_BASE = (import.meta && import.meta.env && import.meta.env.VITE_API_URL) ? import.meta.env.VITE_API_URL : 'http://localhost:4000';
+
+  useEffect(() => {
+    // fetch countries list from backend
+    const load = async () => {
+      try {
+        const res = await fetch(`${API_BASE}/countries`);
+        const data = await res.json();
+        setCountries(data || []);
+      } catch (err) {
+        console.error('Failed to load countries', err);
+      }
+    };
+    load();
+  }, []);
 
   const handleSignIn = async (e: FormEvent) => {
     e.preventDefault();
@@ -87,18 +106,26 @@ const Auth = () => {
         return;
       }
 
-      // Clear any errors and store user data and navigate
+      // Clear any errors and store user data
       setSigninErrors([]);
       setSigninWarning(null);
-      localStorage.setItem(
-        "auth-user", 
-        JSON.stringify({ 
-          id: data.session.user.id, 
-          email: data.session.user.email,
-          lastSignIn: new Date().toISOString()
-        })
-      );
-      
+      const userObj = { id: data.session.user.id, email: data.session.user.email, lastSignIn: new Date().toISOString() };
+      localStorage.setItem("auth-user", JSON.stringify(userObj));
+
+      // Save selected country to user_profiles via backend
+      try {
+        if (countryCode) {
+          const c = countries.find((x: any) => x.cca2 === countryCode || x.cca3 === countryCode);
+          await fetch('/profiles', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ user_id: userObj.id, country_code: c?.cca2 || countryCode, country_name: c?.name || '' })
+          });
+        }
+      } catch (err) {
+        console.error('Failed to save profile', err);
+      }
+
       toast.success("Welcome back!");
       navigate("/");
     } catch (err) {
@@ -206,6 +233,20 @@ const Auth = () => {
         toast.success('Account created. Please check your email to confirm before signing in.');
       }
 
+      // After signup, save selected country (if any) to user_profiles
+      try {
+        if (data?.user && countryCode) {
+          const c = countries.find((x: any) => x.cca2 === countryCode || x.cca3 === countryCode);
+          await fetch('/profiles', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ user_id: data.user.id, country_code: c?.cca2 || countryCode, country_name: c?.name || '' })
+          });
+        }
+      } catch (err) {
+        console.error('Failed to save profile after signup', err);
+      }
+
   // Clear form on success
   setEmail("");
   setPassword("");
@@ -266,6 +307,16 @@ const Auth = () => {
                   </div>
 
                   <div className="space-y-2">
+                    <Label htmlFor="signin-country">Country</Label>
+                    <select id="signin-country" value={countryCode} onChange={(e) => setCountryCode(e.target.value)} className="w-full p-2 rounded border bg-background/50">
+                      <option value="">(Select country)</option>
+                      {countries.map((c:any) => (
+                        <option key={c.cca3 || c.cca2 || c.name} value={c.cca2 || c.cca3}>{c.name}</option>
+                      ))}
+                    </select>
+                  </div>
+
+                  <div className="space-y-2">
                     <Label htmlFor="signin-password">Password</Label>
                     <Input id="signin-password" type="password" placeholder="••••••••" value={password} onChange={(e) => setPassword(e.target.value)} disabled={loading} className="bg-background/50 border-input" />
                   </div>
@@ -304,6 +355,16 @@ const Auth = () => {
                       disabled={loading || cooldownTimer > 0} 
                       className="bg-background/50 border-input" 
                     />
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="signup-country">Country</Label>
+                    <select id="signup-country" value={countryCode} onChange={(e) => setCountryCode(e.target.value)} className="w-full p-2 rounded border bg-background/50">
+                      <option value="">(Select country)</option>
+                      {countries.map((c:any) => (
+                        <option key={c.cca3 || c.cca2 || c.name} value={c.cca2 || c.cca3}>{c.name}</option>
+                      ))}
+                    </select>
                   </div>
 
                   {signupErrors.length > 0 && (

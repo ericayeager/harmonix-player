@@ -125,9 +125,7 @@ const Home = () => {
   const progressWrapperRef = useRef(null);
 
   /* core playback state */
-  const [songIndex, setSongIndex] = useState(
-    () => Number(localStorage.getItem(LS_KEYS.LAST_SONG)) || 0
-  );
+  const [songIndex, setSongIndex] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
@@ -135,54 +133,24 @@ const Home = () => {
 
   /* features state */
   const [shuffle, setShuffle] = useState(false);
-  const [loop, setLoop] = useState(
-    () => localStorage.getItem(LS_KEYS.REPEAT) === "true"
-  );
-  const [volume, setVolume] = useState(
-    () => Number(localStorage.getItem(LS_KEYS.VOLUME)) || 1
-  );
+  const [loop, setLoop] = useState(false);
+  const [volume, setVolume] = useState(1);
   const [muted, setMuted] = useState(false);
-  const [queue, setQueue] = useState(() => {
-    const raw = localStorage.getItem(LS_KEYS.QUEUE);
-    if (raw) {
-      try {
-        const arr = JSON.parse(raw);
-        if (Array.isArray(arr) && arr.length) return arr;
-      } catch {}
-    }
-    return songs.map((_, i) => i);
-  });
-  const [favorites, setFavorites] = useState(() => {
-    const raw = localStorage.getItem(LS_KEYS.FAVORITES);
-    if (raw) {
-      try {
-        const arr = JSON.parse(raw);
-        if (Array.isArray(arr)) return arr;
-      } catch {}
-    }
-    return [];
-  });
+  const [queue, setQueue] = useState(songs.map((_, i) => i));
+  // Favorites from Supabase
+  const [favorites, setFavorites] = useState([]);
+  const [favoritesLoading, setFavoritesLoading] = useState(false);
+  const [favoritesError, setFavoritesError] = useState(null);
 
   // favParts example structure:
   // { id: 1639123, songIndex: 0, start: 150, end: 180, name: "Chorus", createdAt: 1639123 }
-  const [favParts, setFavParts] = useState(() => {
-    const raw = localStorage.getItem(LS_KEYS.FAVPARTS);
-    if (raw) {
-      try {
-        const arr = JSON.parse(raw);
-        if (Array.isArray(arr)) return arr;
-      } catch {}
-    }
-    return [];
-  });
+  const [favParts, setFavParts] = useState([]);
 
   const [recent, setRecent] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [activeTab, setActiveTab] = useState("all");
   const [queueOpen, setQueueOpen] = useState(false);
-  const [theme, setTheme] = useState(
-    () => localStorage.getItem(LS_KEYS.THEME) || "professional"
-  );
+  const [theme, setTheme] = useState("professional");
   const [showMini, setShowMini] = useState(true);
 
   /* theme dropdown state */
@@ -221,25 +189,133 @@ const Home = () => {
 
   /* persist important things */
   useEffect(() => {
-    localStorage.setItem(LS_KEYS.THEME, theme);
+    const user_id = localStorage.getItem('auth-user')
+      ? JSON.parse(localStorage.getItem('auth-user')).id
+      : 'anonymous';
+    fetch('http://localhost:4000/theme', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ user_id, theme })
+    }).catch(() => {});
   }, [theme]);
+
+  // Fetch favorites from backend on mount
   useEffect(() => {
-    localStorage.setItem(LS_KEYS.FAVORITES, JSON.stringify(favorites));
-  }, [favorites]);
+    const user_id = localStorage.getItem('auth-user')
+      ? JSON.parse(localStorage.getItem('auth-user')).id
+      : 'anonymous';
+
+    const fetchAll = async () => {
+      setFavoritesLoading(true);
+      setFavoritesError(null);
+      try {
+        // favorites
+        const favRes = await fetch('http://localhost:4000/favorites');
+        const favData = await favRes.json();
+        if (Array.isArray(favData)) setFavorites(favData.filter(f => f.user_id === user_id).map(f => Number(f.song_id)));
+
+        // queue
+        try {
+          const qRes = await fetch(`http://localhost:4000/queue?user_id=${user_id}`);
+          const qData = await qRes.json();
+          if (Array.isArray(qData) && qData[0]?.queue) setQueue(qData[0].queue);
+        } catch {}
+
+        // theme
+        try {
+          const tRes = await fetch(`http://localhost:4000/theme?user_id=${user_id}`);
+          const tData = await tRes.json();
+          if (Array.isArray(tData) && tData[0]?.theme) setTheme(tData[0].theme);
+        } catch {}
+
+        // volume
+        try {
+          const vRes = await fetch(`http://localhost:4000/volume?user_id=${user_id}`);
+          const vData = await vRes.json();
+          if (Array.isArray(vData) && typeof vData[0]?.volume === 'number') setVolume(vData[0].volume);
+        } catch {}
+
+        // repeat
+        try {
+          const rRes = await fetch(`http://localhost:4000/repeat?user_id=${user_id}`);
+          const rData = await rRes.json();
+          if (Array.isArray(rData) && typeof rData[0]?.repeat === 'boolean') setLoop(rData[0].repeat);
+        } catch {}
+
+        // last song
+        try {
+          const lRes = await fetch(`http://localhost:4000/lastsong?user_id=${user_id}`);
+          const lData = await lRes.json();
+          if (Array.isArray(lData) && typeof lData[0]?.songIndex === 'number') setSongIndex(lData[0].songIndex);
+        } catch {}
+
+        // favparts
+        try {
+          const fpRes = await fetch(`http://localhost:4000/favparts?user_id=${user_id}`);
+          const fpData = await fpRes.json();
+          if (Array.isArray(fpData)) setFavParts(fpData);
+        } catch {}
+
+      } catch (err) {
+        setFavoritesError('Failed to load favorites');
+      } finally {
+        setFavoritesLoading(false);
+      }
+    };
+
+    fetchAll();
+  }, []);
   useEffect(() => {
-    localStorage.setItem(LS_KEYS.VOLUME, String(volume));
+    const user_id = localStorage.getItem('auth-user')
+      ? JSON.parse(localStorage.getItem('auth-user')).id
+      : 'anonymous';
+    fetch('http://localhost:4000/volume', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ user_id, volume })
+    }).catch(() => {});
   }, [volume]);
   useEffect(() => {
-    localStorage.setItem(LS_KEYS.QUEUE, JSON.stringify(queue));
+    const user_id = localStorage.getItem('auth-user')
+      ? JSON.parse(localStorage.getItem('auth-user')).id
+      : 'anonymous';
+    fetch('http://localhost:4000/queue', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ user_id, queue })
+    }).catch(() => {});
   }, [queue]);
   useEffect(() => {
-    localStorage.setItem(LS_KEYS.FAVPARTS, JSON.stringify(favParts));
+    const user_id = localStorage.getItem('auth-user')
+      ? JSON.parse(localStorage.getItem('auth-user')).id
+      : 'anonymous';
+    favParts.forEach(part => {
+      fetch('http://localhost:4000/favparts', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ user_id, songIndex: part.songIndex, start: part.start, end: part.end, name: part.name })
+      }).catch(() => {});
+    });
   }, [favParts]);
   useEffect(() => {
-    localStorage.setItem(LS_KEYS.REPEAT, loop ? "true" : "false");
+    const user_id = localStorage.getItem('auth-user')
+      ? JSON.parse(localStorage.getItem('auth-user')).id
+      : 'anonymous';
+    fetch('http://localhost:4000/repeat', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ user_id, repeat: loop })
+    }).catch(() => {});
   }, [loop]);
   useEffect(() => {
-    localStorage.setItem(LS_KEYS.LAST_SONG, String(songIndex));
+    const user_id = localStorage.getItem('auth-user')
+      ? JSON.parse(localStorage.getItem('auth-user')).id
+      : 'anonymous';
+    fetch('http://localhost:4000/lastsong', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ user_id, songIndex })
+    }).catch(() => {});
   }, [songIndex]);
 
   /* helper to inject font link once */
@@ -559,12 +635,36 @@ const Home = () => {
   const removeFromQueue = (index) =>
     setQueue((q) => q.filter((x) => x !== index));
 
-  const toggleFavorite = (index) =>
-    setFavorites((prev) => {
-      const copy = new Set(prev);
-      copy.has(index) ? copy.delete(index) : copy.add(index);
-      return Array.from(copy);
-    });
+  // Replace toggleFavorite to use API
+  const toggleFavorite = async (index) => {
+    // Assume user_id is available (replace with actual user ID logic)
+    const user_id = localStorage.getItem('auth-user')
+      ? JSON.parse(localStorage.getItem('auth-user')).id
+      : 'anonymous';
+    if (favorites.includes(index)) {
+      // Remove from favorites
+      try {
+        // Find favorite ID from backend (fetch all, find matching song_id)
+        const res = await fetch('http://localhost:4000/favorites');
+        const data = await res.json();
+        const fav = data.find(f => Number(f.song_id) === index && f.user_id === user_id);
+        if (fav) {
+          await fetch(`http://localhost:4000/favorites/${fav.id}`, { method: 'DELETE' });
+        }
+        setFavorites(favorites.filter(i => i !== index));
+      } catch {}
+    } else {
+      // Add to favorites
+      try {
+        await fetch('http://localhost:4000/favorites', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ user_id, song_id: String(index) })
+        });
+        setFavorites([...favorites, index]);
+      } catch {}
+    }
+  };
 
   const addRecent = (index) =>
     setRecent((r) => {
