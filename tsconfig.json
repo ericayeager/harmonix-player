@@ -1,9 +1,9 @@
 {
   "compilerOptions": {
     "jsx": "react-jsx",
-    "module": "esnext",
-    "target": "es6",
-    "moduleResolution": "node",
+    "module": "ESNext",
+    "target": "ESNext",
+    "moduleResolution": "Node",
     "allowJs": true,
     "checkJs": false,
     "esModuleInterop": true,
@@ -12,7 +12,11 @@
     "forceConsistentCasingInFileNames": true,
     "resolveJsonModule": true,
     "isolatedModules": true,
-    "noEmit": true
+    "noEmit": true,
+    "types": ["vite/client"]
   },
-  "include": ["src", "src/auth/integrations", "src/auth/lib"]
+  "include": [
+    "src",
+    "src/vite-env.d.ts"
+  ]
 }
